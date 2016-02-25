@@ -99,7 +99,8 @@ defmodule HTTPotion.Base do
         follow_redirects = Keyword.get(options, :follow_redirects, Application.get_env(:httpotion, :default_follow_redirects, false))
 
         if stream_to = Dict.get(options, :stream_to) do
-          ib_options = Dict.put(ib_options, :stream_to, spawn(__MODULE__, :transformer, [stream_to, method, url, options]))
+          transformer_pid = spawn(__MODULE__, :transformer, [stream_to, method, url, options])
+          ib_options = Dict.put(ib_options, :stream_to, {transformer_pid, :once})
         end
 
         if user_password = Dict.get(options, :basic_auth) do
@@ -182,6 +183,10 @@ defmodule HTTPotion.Base do
         else
           handle_response response
         end
+      end
+
+      def stream_next(id) do
+        :ibrowse.stream_next(id)
       end
 
       defp normalize_location(location, url) do

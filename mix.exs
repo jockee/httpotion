@@ -24,7 +24,7 @@ defmodule HTTPotion.Mixfile do
   end
 
   defp deps do
-    [ {:ibrowse, "~> 4.2"},
+    [ {:ibrowse, nil, [git: "https://github.com/cmullaparthi/ibrowse.git", tag: "v4.1.2", manager: :rebar]}
       {:ex_doc, "~> 0.11", only: [:dev, :test, :docs]} ]
   end
 
